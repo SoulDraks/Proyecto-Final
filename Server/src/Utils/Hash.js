@@ -11,9 +11,9 @@ async function EncriptarPassword(Password)
 }
 
 // ---> Metodo para Desencriptar
-async function CompararPassword(Password, Parametro)
+function CompararPassword(Password, Parametro)
 {
-    const Seguridad = await Encriptar.compare(Password, Parametro);
+    return Encriptar.compare(Password, Parametro);
 }
 
 module.exports = {CompararPassword, EncriptarPassword}

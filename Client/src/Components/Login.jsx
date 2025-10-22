@@ -19,7 +19,7 @@ function Login() {
     }
   return (
     <>
-    <form action="">
+    <form onSubmit={LoginSubmit}>
 
         <label htmlFor="">Usuario:</label>
         <input type="text" name="User"  id="User" />

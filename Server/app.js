@@ -7,12 +7,11 @@ const cors= require('cors')
 App.use(cors())
 App.use(express.json())
 
-const Ruta= require('./src/Routers/LoginRouter')
-// --> Ruta Padre
-// App.use('/api',Ruta)
+const Router = require('./src/Routers/Login.Router')
+App.use('/api', Router)
 
 require('dotenv').config()
-const PORT=process.env.PORT ||5000
+const PORT = process.env.PORT || 5000
 
 App.listen(PORT,()=>
 {
