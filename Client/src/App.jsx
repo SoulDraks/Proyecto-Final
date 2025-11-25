@@ -1,10 +1,13 @@
-import Layouts from "./Components/Layouts"
+import BarPlayeroLayout from "./Components/BarPlayeroLayout"
+import BarPlayeroFooter from "./Components/BarPlayeroFooter"
+import { CartProvider } from "./Context/CartContext"
 
 function App() {
   return (
-    <>
-    <Layouts />
-    </>
+    <CartProvider>
+      <BarPlayeroLayout />
+      <BarPlayeroFooter />
+    </CartProvider>
   )
 }
 
