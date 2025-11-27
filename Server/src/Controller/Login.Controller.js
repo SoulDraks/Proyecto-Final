@@ -3,81 +3,111 @@ const { CompararPassword, EncriptarPassword } = require("../Utils/Hash");
 
 function dbGet(query, params)
 {
-    // Si es false, no hay datos y hubo error, si es objeto, son los datos obtenidos
-    let Datos = false;
-    params = params || [];
-    db.get(query, params, (Error, Filas) => {
-        if (Error)
-            console.error("✖ Error en Query", Error);
-        else
-            Datos = Filas;
+    return new Promise((resolve, reject) => {
+        db.get(query, params, (Error, Datos) => {
+            if(Error)
+            {
+                console.error("✖ Error en Query", err);
+                reject(Error);
+            }
+            else
+                resolve(Datos);
+        });
     });
-    return Datos;
 }
 
 function dbAll(query, params)
 {
-    // Lo mismo que arriba pero siendo un array
-    let Datos = false;
-    params = params || [];
-    db.all(query, params, (Error, Filas) => {
-        if(Error)
-            console.error("✖ Error en Query", Error);
-        else
-            Datos = Filas;
-    });
-    return Datos;
+    return new Promise((resolve, reject) => {
+        // Lo mismo que arriba pero siendo un array
+        params = params || [];
+        db.all(query, params, (Error, Datos) => {
+            if(Error)
+            {
+                console.error("✖ Error en Query", Error);
+                reject(Error)
+            }
+            else
+                resolve(Datos);
+        });
+    })
 }
 
 function dbRun(query, params)
 {
-    // Si es false, fue exitoso, si es true, hubo error :D
-    let Resultado = false;
-    db.run(query, params, (Error) => {
-        if(Error)
-        {
-            console.error("✖ Error en Query", Error);
-            Resultado = true;
-        }
-    });
-    return Resultado;
+    return new Promise((resolve, reject) => {
+        db.run(query, params, (Error) => {
+            if(Error)
+            {
+                console.error("✖ Error en Query", Error);
+                reject(Error);
+            }
+            else
+                resolve(false);
+        });
+    })
 }
 
-function ClienteExiste(ID)
+async function ClienteExiste(ID)
 {
     const query = "SELECT * FROM Cliente WHERE ID = ?";
-    const Cliente = dbGet(query, [ID]);
+    const Cliente = await dbGet(query, [ID]);
     return Cliente != false;
 }
 
-function ProductoExiste(ID)
+async function ProductoExiste(ID)
 {
     const query = "SELECT * FROM Productos WHERE ID = ?";
-    const Producto = dbGet(query, [ID]);
+    const Producto = await dbGet(query, [ID]);
     return Producto != false;
 }
 
-function PromoExiste(ID)
+async function PromoExiste(ID)
 {
     const query = "SELECT * FROM Promos WHERE ID = ?";
-    const Promo = dbGet(query, [ID]);
+    const Promo = await dbGet(query, [ID]);
     return Promo != false;
 }
 
 // Para registrar un nuevo cliente
-function Registrarse(req, res)
+async function Registrarse(req, res)
 {
     const {Nombre, Correo, Contraseña} = req.body;
     if(!Nombre || !Correo || !Contraseña)
         return res.status(400).json({Error: "Faltan datos (Nombre, Correo o Contraseña)"});
-    const Existe = dbGet(`SELECT * FROM Cliente WHERE Nombre = ?`, [Nombre]);
+    const Existe = await dbGet(`SELECT * FROM Cliente WHERE Nombre = ?`, [Nombre]);
     if(Existe)
-        return res.status(409).json({ Error: "Nombre de usuario ya existente" });
+        return res.status(409).json({Error: "Nombre de usuario ya existente"});
     const Hash = EncriptarPassword(Contraseña);
-    const query = `INSERT INTO Cliente (Nombre, Correo, Contraseña) VALUES (?, ?, ?)`;
-    const result = dbRun(query, [Nombre, Correo, Hash]);
+    const query = `
+        INSERT INTO Cliente (Nombre, Correo, Contraseña)
+        VALUES (?, ?, ?)
+    `;
+    const result = await dbRun(query, [Nombre, Correo, Hash]);
     return res.status(201).json({
         Mensaje: "Cliente registrado",
+        Nombre,
+        Correo
+    });
+}
+
+// Para registrar un nuevo cliente
+async function RegistrarseAdmin(req, res)
+{
+    const {Nombre, Correo, Contraseña} = req.body;
+    if(!Nombre || !Correo || !Contraseña)
+        return res.status(400).json({Error: "Faltan datos (Nombre, Correo o Contraseña)"});
+    const Existe = await dbGet(`SELECT * FROM Empleado WHERE Nombre = ?`, [Nombre]);
+    if(Existe)
+        return res.status(409).json({Error: "Nombre de empleado ya existente"});
+    const Hash = EncriptarPassword(Contraseña);
+    const query = `
+        INSERT INTO Empleado (Nombre, Correo, Contraseña)
+        VALUES (?, ?, ?)
+    `;
+    const result = await dbRun(query, [Nombre, Correo, Hash]);
+    return res.status(201).json({
+        Mensaje: "Empleado Registrado",
         Nombre,
         Correo
     });
@@ -96,13 +126,13 @@ function Registrarse(req, res)
         }
     }
 */
-function Login(req, res)
+async function Login(req, res)
 {
     const {Nombre, Contraseña} = req.body;
     if(!Nombre || !Contraseña)
         return res.status(400).json({Error: "Campos vacíos"})
     const query = `SELECT * FROM Cliente WHERE Nombre = ?`;
-    const Cliente = dbGet(query, [Nombre]);
+    const Cliente = await dbGet(query, [Nombre]);
     if(!Cliente) 
         return res.status(401).json({Error: "Usuario inexistente"});
     const Hashed = CompararPassword(Password. Tabla.Password);
@@ -116,12 +146,12 @@ function Login(req, res)
 
 // Para que se loguee el empleado/admin
 // Devuelve de la misma manera que Login pero con Empleado
-function LoginAdmin(req, res)
+async function LoginAdmin(req, res)
 {
     const {Nombre, Contraseña} = req.body;
     if(!Nombre || !Contraseña)
         return res.status(400).json({Error: "Campos vacíos"});
-    const Empleado = dbGet(`SELECT * FROM Empleado WHERE Nombre = ?`, [Nombre]);
+    const Empleado = await dbGet(`SELECT * FROM Empleado WHERE Nombre = ?`, [Nombre]);
     if(!Empleado)
         return res.status(401).json({Error: "Empleado inexistente"});
     const Hashed = CompararPassword(Contraseña, emp.Contraseña);
@@ -136,23 +166,30 @@ function LoginAdmin(req, res)
 async function ObtenerProductos(req, res)
 {
     const query = "SELECT * FROM Productos";
-    Productos = dbAll(query);
+    Productos = await dbAll(query);
+    console.log(Productos);
     if(!Productos)
         return res.status(500).json({Error: "Error en Server o Query"});
+    Productos.map((Producto) => {
+        Producto.Imagen = Producto.Imagen.toString("base64");
+    });
     return res.status(201).json(Productos);
 }
 
 async function ObtenerPromos(req, res)
 {
     const query = `
-        SELECT Productos.*, Promos.Nombre AS NombrePromo, Promos.Precio AS PrecioPromo
+        SELECT Productos.*, Promos.Nombre AS NombrePromo, Promos.Precio AS PrecioPromo, Promos.Imagen AS ImagenPromo, Promos.Descripcion AS DescripcionPromo
         FROM Productos
         JOIN Promos ON Productos.ID_Promo = Promos.ID
         WHERE Productos.ID_Promo != -1
     `;
-    Promos = dbAll(query);
+    Promos = await dbAll(query);
     if(!Promos)
         return res.status(500).json({Error: "Error en Server o Query"});
+    Promos.map((Promo) => {
+        Promo.ImagenPromo = Promo.ImagenPromo.toString("base64");
+    })
     return res.status(201).json(Promos);
 }
 
@@ -166,6 +203,7 @@ async function ObtenerPromos(req, res)
             "ProductoNombre": "Whisky",
             "ProductoPrecio": 1200,
             "ProductoDescripcion": "Un buen whisky",
+            "ProductoImagen": AlgunaImagen.png
             "Cantidad": 2,
             "ID_Promo": -1,
             "PromoNombre": null,
@@ -194,7 +232,7 @@ async function ObtenerPromos(req, res)
     });
 }
 */
-function ObtenerCarrito(req, res)
+async function ObtenerCarrito(req, res)
 {
     const {ID_Cliente} = req.body;
     if(!ID_Cliente)
@@ -205,6 +243,7 @@ function ObtenerCarrito(req, res)
             Carrito.ID_Producto,
             Productos.Nombre AS ProductoNombre,
             Productos.Precio AS ProductoPrecio,
+            Productos.Imagen AS ProductoImagen,
             Productos.Descripcion AS ProductoDescripcion,
             Carrito.Cantidad,
             Carrito.ID_Promo,
@@ -215,27 +254,30 @@ function ObtenerCarrito(req, res)
         LEFT JOIN Promos ON Carrito.ID_Promo = Promos.ID
         WHERE Carrito.ID_Cliente = ?
     `;
-    const Carrito = dbAll(query, [ID_Cliente]);
+    const Carrito = await dbAll(query, [ID_Cliente]);
+    Carrito.map((Item) => {
+        Item.ProductoImagen = Item.ProductoImagen.toString("base64");
+    })
     return res.status(200).json(Carrito);
 }
 
 // Añade un producto al carrito del cliente
-function AñadirProdCarrito(req, res)
+async function AñadirProdCarrito(req, res)
 {
     const {ID_Cliente, ID_Producto} = req.body;
     if(!ID_Cliente || !ID_Producto)
         return res.status(400).json({Error: "Faltan ID_Cliente o ID_Producto"});
     // Verificamos si Cliente y Producto existen
-    if(!ClienteExiste(ID_Cliente))
+    if(!await ClienteExiste(ID_Cliente))
         return res.status(404).json({Error: "Cliente inexistente", ID_Cliente});
-    if(!ProductoExiste(ID_Producto))
+    if(!await ProductoExiste(ID_Producto))
         return res.status(404).json({Error: "Producto inexistente", ID_Producto});
     // Verificamos si el producto ya esta en el carrito
     query = `
         SELECT * FROM Carrito 
         WHERE ID_Producto = ? AND ID_Cliente = ?
     `;
-    const Item = dbGet(query, [ID_Producto, ID_Cliente]);
+    const Item = await dbGet(query, [ID_Producto, ID_Cliente]);
     if(Item)
     {
         // Si ya existe, solo aumentamos la cantidad
@@ -244,7 +286,7 @@ function AñadirProdCarrito(req, res)
             UPDATE Carrito SET Cantidad = ?
             WHERE ID = ?
         `;
-        dbRun(query, [nuevaCantidad, Item.ID]);
+        await dbRun(query, [nuevaCantidad, Item.ID]);
     }
     else
     {
@@ -253,7 +295,7 @@ function AñadirProdCarrito(req, res)
             INSERT INTO Carrito(ID_Producto, ID_Promo, ID_Cliente, Cantidad) 
             VALUES (?, -1, ?, 1)
         `;
-        dbRun(query, [ID_Producto, ID_Cliente]);
+        await dbRun(query, [ID_Producto, ID_Cliente]);
     }
     return res.status(201).json({Mensaje: "Producto añadido al carrito"});
 }
@@ -262,7 +304,7 @@ function AñadirProdCarrito(req, res)
 // Si el producto tiene cantidad > 1, solo disminuye la cantidad
 // Si la cantidad es 1, elimina el producto del carrito
 // Si vos envias Eliminar=true en el body, elimina el producto sin importar la cantidad
-function EliminarProdCarrito(req, res)
+async function EliminarProdCarrito(req, res)
 {
     const {ID_Cliente, ID_Producto, Eliminar} = req.body;
     if(!ID_Carrito || !ID_Cliente)
@@ -275,7 +317,7 @@ function EliminarProdCarrito(req, res)
         SELECT * FROM Carrito 
         WHERE ID_Producto = ? AND ID_Cliente = ?
     `;
-    const Item = dbGet(query, [ID_Producto, ID_Cliente]);
+    const Item = await dbGet(query, [ID_Producto, ID_Cliente]);
     if(!Item)
         return res.status(404).json({Error: "El cliente no tiene ese producto en el carrito"});
     if(Item.Cantidad > 1 && !Eliminar)
@@ -286,34 +328,34 @@ function EliminarProdCarrito(req, res)
             UPDATE Carrito SET Cantidad = ?
             WHERE ID = ?
         `;
-        dbRun(query, [nuevaCantidad, Item.ID]);
+        await dbRun(query, [nuevaCantidad, Item.ID]);
         return res.status(200).json({Mensaje: "Cantidad de producto disminuida"});
     }
     else
     {
         // Si la cantidad es 1 o 'Eliminar' es verdadero, eliminamos el item del carrito
         query = "DELETE FROM Carrito WHERE ID = ?";
-        dbRun(query, [Item.ID]);
+        await dbRun(query, [Item.ID]);
         return res.status(200).json({Mensaje: "Producto eliminado del carrito"});
     }
 }
 
 // Añade una promo al carrito del cliente
-function AñadirPromCarrito(req, res)
+async function AñadirPromCarrito(req, res)
 {
     const {ID_Cliente, ID_Promo} = req.body;
     if(!ID_Cliente || !ID_Promo)
         return res.status(400).json({Error: "Faltan ID_Cliente o ID_Promo"});
-    if(!ClienteExiste(ID_Cliente))
+    if(!await ClienteExiste(ID_Cliente))
         return res.status(404).json({Error: "Cliente inexistente", ID_Cliente});
-    if(!PromoExiste(ID_Promo))
+    if(!await PromoExiste(ID_Promo))
         return res.status(404).json({Error: "Promo inexistente", ID_Promo});
     // Verificar si ya esta en carrito
     let query = `
         SELECT * FROM Carrito
         WHERE ID_Promo = ? AND ID_Cliente = ?
     `;
-    const Item = dbRun(query, [ID_Promo, ID_Cliente]);
+    const Item = await dbRun(query, [ID_Promo, ID_Cliente]);
     if(Item)
     {
         const nuevaCantidad = Item.Cantidad + 1;
@@ -321,7 +363,7 @@ function AñadirPromCarrito(req, res)
             UPDATE Carrito SET Cantidad = ?
             WHERE ID = ?
         `;
-        dbRun(query, [nuevaCantidad, Item.ID]);
+        await dbRun(query, [nuevaCantidad, Item.ID]);
     }
     else
     {
@@ -329,7 +371,7 @@ function AñadirPromCarrito(req, res)
             INSERT INTO Carrito(ID_Producto, ID_Promo, ID_Cliente, Cantidad) 
             VALUES (-1, ?, ?, 1)
         `;
-        dbRun(query, [ID_Promo, ID_Cliente]);
+        await dbRun(query, [ID_Promo, ID_Cliente]);
     }
     return res.status(201).json({Mensaje: "Promo añadido al carrito"});
 }
@@ -339,20 +381,20 @@ function AñadirPromCarrito(req, res)
 // Si la cantidad es 1, elimina la promo del carrito
 // Si vos envias Eliminar=true en el body, elimina la promo sin importar la cantidad
 // No se para que repito pero ante la duda lo dejo :D
-function EliminarPromCarrito(req, res)
+async function EliminarPromCarrito(req, res)
 {
     const {ID_Cliente, ID_Promo, Eliminar} = req.body;
     if(!ID_Carrito || !ID_Cliente)
         return res.status(400).json({Error: "Faltan ID_Carrito o ID_Cliente"});
-    if(!ClienteExiste(ID_Cliente))
+    if(!await ClienteExiste(ID_Cliente))
         return res.status(404).json({Error: "Cliente inexistente"});
-    if(!PromoExiste(ID_Producto))
+    if(!await PromoExiste(ID_Producto))
         return res.status(404).json({Error: "Promo inexistente"});
     let query = `
         SELECT * FROM Carrito 
         WHERE ID_Promo = ? AND ID_Cliente = ?
     `;
-    const Item = dbGet(query, [ID_Promo, ID_Cliente]);
+    const Item = await dbGet(query, [ID_Promo, ID_Cliente]);
     if(!Item)
         return res.status(404).json({Error: "El cliente no tiene esa promo en el carrito"});
     if(Item.Cantidad > 1 && !Eliminar)
@@ -362,29 +404,31 @@ function EliminarPromCarrito(req, res)
             UPDATE Carrito SET Cantidad = ?
             WHERE ID = ?
         `;
-        dbRun(query, [nuevaCantidad, Item.ID]);
+        await dbRun(query, [nuevaCantidad, Item.ID]);
         return res.status(200).json({Mensaje: "Cantidad de promo disminuida"});
     }
     else
     {
         query = "DELETE FROM Carrito WHERE ID = ?";
-        dbRun(query, [Item.ID]);
+        await dbRun(query, [Item.ID]);
         return res.status(200).json({Mensaje: "Promoeliminado del carrito"});
     }
 }
 
 // Añade un nuevo producto a la base de datos
-function AñadirProducto(req, res)
+async function AñadirProducto(req, res)
 {
     const {Nombre, Precio, Stock, Descripcion} = req.body;
     const ID_Promo = req.body.ID_Promo || -1; // Si no se envia, se pone -1, osea, sin promo
-    if (!Nombre || !Precio || !Stock, !Descripcion)
+    const Imagen = req.file ? req.file.buffer : null;
+    if (!Nombre || !Precio || !Imagen || !Stock, !Descripcion)
         return res.status(400).json({Error: "Faltan datos"});
     const query = `
-        INSERT INTO Productos (Nombre, Precio, Stock, Descripcion, ID_Promo)
-        VALUES (?, ?, ?, ?, ?)
+        INSERT INTO Productos (Nombre, Precio, Imagen, Stock, Descripcion, ID_Promo)
+        VALUES (?, ?, ?, ?, ?, ?)
     `;
-    const Error = dbRun(query, [Nombre, Precio, Stock, Descripcion, ID_Promo]);
+    const Error = await dbRun(query, [Nombre, Precio, Imagen, Stock, Descripcion, ID_Promo]);
+    console.log(Error)
     if(Error)
         return res.status(500).json({Error: "Error en Servidor"});
     return res.status(201).json({
@@ -394,19 +438,20 @@ function AñadirProducto(req, res)
 }
 
 // Modifica un producto en la base de datos (un poco obvio lo se XD)
-function ModificarProducto(req, res)
+async function ModificarProducto(req, res)
 {
     const {ID, Nombre, Precio, Stock, Descripcion, ID_Promo} = req.body;
-    if (!ID, !Nombre || !Precio || !Stock || !Descripcion || !ID_Promo)
+    const Imagen = req.file ? req.file.buffer : null;
+    if (!ID, !Nombre || !Precio || !Stock || !Descripcion || !ID_Promo || !Imagen)
         return res.status(400).json({Error: "Faltan datos"});
-    if(!ProductoExiste(ID))
+    if(!await ProductoExiste(ID))
         return res.status(404).json({Error: "Producto inexistente"});
     const query = `
         UPDATE Productos
-        SET Nombre = ?, Precio = ?, Stock = ?, Descripcion = ?, ID_Promo = ?
+        SET Nombre = ?, Precio = ?, Imagen = ?, Stock = ?, Descripcion = ?, ID_Promo = ?
         WHERE ID = ?
     `;
-    const Error = dbRun(query, [Nombre, Precio, Stock, Descripcion, ID_Promo, ID]);
+    const Error = await dbRun(query, [Nombre, Precio, Imagen, Stock, Descripcion, ID_Promo, ID]);
     if(Error)
         return res.status(500).json({Error: "Error en Servidor"});
     return res.status(201).json({
@@ -416,7 +461,7 @@ function ModificarProducto(req, res)
 }
 
 // Elimina un producto de la base de datos
-function EliminarProducto(req, res)
+async function EliminarProducto(req, res)
 {
     const {ID} = req.body;
     if(!ID)
@@ -425,40 +470,45 @@ function EliminarProducto(req, res)
     if(!Producto)
         return res.status(404).json({ Error: "Producto inexistente"});
     // Borrar referencias en Carrito
-    dbRun(`DELETE FROM Carrito WHERE ID_Producto = ?`, [ID]);
-    dbRun(`DELETE FROM Productos WHERE ID = ?`, [ID]);
+    await dbRun(`DELETE FROM Carrito WHERE ID_Producto = ?`, [ID]);
+    await dbRun(`DELETE FROM Productos WHERE ID = ?`, [ID]);
     return res.status(200).json({Mensaje: "Producto eliminado", ProductoID: ID});
 }
 
 // Añade una promo a la base de datos (dah 🙄)
-function AñadirPromo(req, res) {
+async function AñadirPromo(req, res) {
     const { Nombre, Precio } = req.body;
-    if (!Nombre || !Precio)
+    const Imagen = req.file ? req.file.buffer : null;
+    if (!Nombre || !Precio || !Imagen)
         return res.status(400).json({Error: "Faltan datos"});
-    const query = `INSERT INTO Promos (Nombre, Precio) VALUES (?, ?)`;
-    const Error = dbRun(query, [Nombre, Precio]);
+    const query = `INSERT INTO Promos (Nombre, Precio, Imagen) VALUES (?, ?, ?)`;
+    const Error = await dbRun(query, [Nombre, Precio, Imagen]);
     if(Error)
         return res.status(500).json({Error: "Error en Servidor"});
-    return res.status(201).json({Mensaje: "Promo añadida", PromoID: result.lastID, Nombre, Precio});
+    return res.status(201).json({Mensaje: "Promo añadida", Nombre, Precio});
 }
 
 // Modifica una promo de la base de datos (cuantas veces tendre que hacer esto? XD)
-function ModificarPromo(req, res)
+async function ModificarPromo(req, res)
 {
     const {ID, Nombre, Precio} = req.body;
-    if(!ID || !Nombre || !Precio)
+    const Imagen = req.file ? req.file.buffer : null;
+    if(!ID || !Nombre || !Precio || !Imagen)
         return res.status(400).json({Error: "Faltan datos"});
-    if(!PromoExiste(ID))
+    if(!await PromoExiste(ID))
         return res.status(404).json({ Error: "Promo inexistente" });
-    const query = `UPDATE Promos SET Nombre = ?, Precio = ? WHERE ID = ?`;
-    const Error = dbRun(query, [Nombre, Precio, ID]);
-    if (Error)
+    const query = `
+        UPDATE Promos
+        SET Nombre = ?, Precio = ?, Imagen = ?
+        WHERE ID = ?`;
+    const Error = await dbRun(query, [Nombre, Precio, Imagen, ID]);
+    if(Error)
         return res.status(500).json({ Error: "Error en Servidor" });
     return res.status(200).json({ Mensaje: "Promo modificada", PromoID: ID, Nombre, Precio });
 }
 
 // Elimina una promo de la base de datos
-function EliminarPromo(req, res)
+async function EliminarPromo(req, res)
 {
     const {ID} = req.body;
     if(!ID)
@@ -467,8 +517,8 @@ function EliminarPromo(req, res)
     if(!Promo)
         return res.status(404).json({ Error: "Promo inexistente"});
     // Borrar referencias en Carrito
-    dbRun(`DELETE FROM Carrito WHERE ID_Promo = ?`, [ID]);
-    dbRun(`DELETE FROM Promos WHERE ID = ?`, [ID]);
+    await dbRun(`DELETE FROM Carrito WHERE ID_Promo = ?`, [ID]);
+    await dbRun(`DELETE FROM Promos WHERE ID = ?`, [ID]);
     return res.status(200).json({Mensaje: "Promo eliminada", PromoID: ID});
 }
 

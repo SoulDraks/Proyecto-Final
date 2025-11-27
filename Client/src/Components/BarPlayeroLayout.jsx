@@ -17,26 +17,42 @@ import Cerveza from '../assets/cerveza.jpg'
 import Vino from '../assets/vino.jpg'
 import Whisky from '../assets/Whisky.jpg'
 import FernetConCola from '../assets/Fernet_con_cola.jpg'
+import axios from "axios"
+import { useState, useEffect} from 'react'
 
 function BarPlayeroLayout() {
   const { addToCart } = useCart()
-
   // Datos de productos con stock
-  const products = [
-    { title: "Margarita", image: Margarita, price: "$13", description: "Tequila, triple seco y jugo de lima o limón, servido en un vaso con sal en el borde.", stock: 15 },
-    { title: "Mojito", image: Mojito, price: "$12", description: "Ron, azúcar, menta, jugo de lima y agua con gas o gaseosa.", stock: 20 },
-    { title: "Gin Tonic", image: GinTonic, price: "$11", description: "Ginebra y tónica.", stock: 18 },
-    { title: "Piña Colada", image: PiñaColada, price: "$14", description: "Ron, crema de coco y piña.", stock: 12 },
-    { title: "Manhattan", image: Manhattan, price: "$15", description: "Whisky y vermut rojo.", stock: 10 },
-    { title: "Caipirinha", image: Caipirinha, price: "$12", description: "Cachaça, lima, azúcar y hielo.", stock: 16 },
-    { title: "Cuba Libre", image: CubaLibre, price: "$9", description: "Ron, refresco de cola y limón.", stock: 25 },
-    { title: "Daiquiri", image: Daiquiri, price: "$11", description: "Ron, jugo de limón y azúcar.", stock: 14 },
-    { title: "Cerveza", image: Cerveza, price: "$8", description: "Una opción muy popular en barras de todo el mundo.", stock: 50 },
-    { title: "Vino", image: Vino, price: "$10", description: "Otra opción básica y común.", stock: 30 },
-    { title: "Whisky", image: Whisky, price: "$18", description: "Se consume solo, en las rocas o en cócteles como el Manhattan y el Old Fashioned.", stock: 8 },
-    { title: "Fernet con Cola", image: FernetConCola, price: "$10", description: "Un trago icónico en Argentina, servido con mucho hielo.", stock: 22 },
-  ]
-
+  const [products, setProducts] = useState([]);
+  const [promotions, setPromotions] = useState([]);
+  // Cargar productos
+  useEffect(() => {
+    axios.get("http://localhost:3000/api/obtenerproductos")
+      .then(res => {
+        const lista = res.data.map(p => ({
+          title: p.Nombre,
+          image: "data:image/png;base64," + p.Imagen,
+          price: p.Precio,
+          description: p.Descripcion,
+          stock: p.Stock,
+          raw: p
+        }));
+        setProducts(lista);
+      });
+  }, []);
+  // Cargar promos
+  useEffect(() => {
+    axios.get("http://localhost:3000/api/obtenerpromos")
+      .then(res => {
+        const lista = res.data.map(p => ({
+          name: p.Nombre,
+          price: p.Precio,
+          image: "data:image/png;base64," + p.ImagenPromo
+        }));
+        setPromotions(lista);
+      });
+  }, []);
+  /*DDDDDDDDDDDD
   // Promociones especiales
   const promotions = [
     {
@@ -64,12 +80,28 @@ function BarPlayeroLayout() {
       discount: "30% OFF"
     }
   ]
+  */
+
+  // Promociones especiales
+  axios.get("http://localhost:3000/api/obtenerpromos")
+    .then(res => {
+      const Promos = res.data;
+      console.log(Promos.length);
+      Promos.map((Promo) => {
+        promotions.push({
+          name: Promo.NombrePromo,
+          newPrice: "$" + Promo.PrecioPromo,
+          image: "data:image/png;base64," + Promo.ImagenPromo,
+          description: Promo.DescripcionPromo
+        });
+      })
+    });
 
   return (
     <div className="layout">
       <CartButton />
       <Cart />
-      
+
       <header className="encabezado">
         <img src={Logo} alt="Bar Playero Logo" className="logo-image" />
         <nav className="menu">
@@ -96,7 +128,24 @@ function BarPlayeroLayout() {
       <main className="contenido">
         <h2 className="products-title">NUESTRO MENÚ</h2>
         <div className="cards">
-          {products.map((product) => (
+          {products.map(product => (
+            <DrinkCard
+              key={product.title}
+              title={product.title}
+              image={product.image}
+              price={product.price}
+              description={product.description}
+              stock={product.stock}
+              onAddToCart={() => addToCart(product.raw)}
+            />
+          ))}
+        </div>
+      </main>
+    </div>
+  )
+}
+/*
+            {products.map((product) => (
             <DrinkCard 
               key={product.title}
               title={product.title} 
@@ -107,11 +156,7 @@ function BarPlayeroLayout() {
               onAddToCart={() => addToCart(product)}
             />
           ))}
-        </div>
-      </main>
-    </div>
-  )
-}
+*/
 
 export default BarPlayeroLayout
 

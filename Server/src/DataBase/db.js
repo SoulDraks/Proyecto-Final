@@ -42,6 +42,8 @@ function CrearTablas(db)
 	        "ID"	INTEGER,
 	        "Nombre"	TEXT,
             "Precio"	REAL,
+            "Imagen"    BLOB,
+            "Descripcion" TEXT,
 	        PRIMARY KEY("ID" AUTOINCREMENT)
         );
     `, (Error) => CheckError(Error, "Tabla Promos no creada"));
@@ -51,6 +53,7 @@ function CrearTablas(db)
 	        "ID"	INTEGER,
 	        "Nombre"	TEXT,
 	        "Precio"	REAL,
+            "Imagen"    BLOB,
 	        "Stock"	INTEGER,
 	        "Descripcion"	TEXT,
 	        "ID_Promo"	INTEGER,
