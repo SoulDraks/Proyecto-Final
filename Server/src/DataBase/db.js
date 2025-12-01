@@ -33,9 +33,16 @@ function CrearTablas(db)
 	        "Nombre"	TEXT,
 	        "Correo"	TEXT,
 	        "Contraseña"	TEXT,
+	        "Rol"	TEXT DEFAULT 'Admin',
 	        PRIMARY KEY("ID" AUTOINCREMENT)
         );
     `, (Error) => CheckError(Error, "Tabla Empleados no creada"));
+    // Agregar columna Rol si no existe (para bases de datos existentes)
+    db.run(`
+        ALTER TABLE Empleado ADD COLUMN Rol TEXT DEFAULT 'Admin'
+    `, (Error) => {
+        // Ignorar error si la columna ya existe
+    });
     // Tabla Promos
     db.run(`
         CREATE TABLE IF NOT EXISTS "Promos" (
@@ -89,6 +96,18 @@ function CrearTablas(db)
     `, (Error) => CheckError(Error, "Tabla Compra no creada"));
 }
 
+// Función para inicializar usuarios por defecto
+function InicializarUsuarios(db) {
+    const { crearUsuariosIniciales } = require('../Utils/initUsers');
+    
+    // Esperar un poco más para asegurar que las tablas estén creadas
+    setTimeout(() => {
+        crearUsuariosIniciales().catch(err => {
+            console.error('Error al inicializar usuarios:', err);
+        });
+    }, 1000);
+}
+
 const db = new SQLite.Database(dbUbicacion, (Error)=>{
     if(Error)
         console.error('No se Pudo Crear la Base de Datos ⛔')
@@ -96,6 +115,10 @@ const db = new SQLite.Database(dbUbicacion, (Error)=>{
     {
         console.log('✅ Base de Datos Creada')
         CrearTablas(db);
+        // Inicializar usuarios después de crear las tablas
+        setTimeout(() => {
+            InicializarUsuarios(db);
+        }, 500);
     }
 })
 

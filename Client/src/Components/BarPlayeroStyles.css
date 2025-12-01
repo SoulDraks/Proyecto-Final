@@ -1,9 +1,10 @@
 .encabezado{
     height: 100px;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     gap: 20px;
+    padding: 0 2rem;
     background: linear-gradient(135deg, #450693 0%, #8C00FF 50%, #FF3F7F 100%);
     border-bottom: 3px solid #FFC400;
     box-shadow: 0 4px 15px rgba(140, 0, 255, 0.3);
@@ -38,6 +39,56 @@
 .menu:hover :not(a:hover)
 {
     opacity: 0.6;
+}
+
+.user-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.user-name {
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.login-btn,
+.logout-btn {
+    padding: 0.5rem 1rem;
+    background: #FFC400;
+    color: #000;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.login-btn:hover,
+.logout-btn:hover {
+    background: #FF3F7F;
+    color: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.admin-link {
+    padding: 0.5rem 1rem;
+    background: #4CAF50;
+    color: #ffffff;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.admin-link:hover {
+    background: #45a049;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .hero-banner {

@@ -3,36 +3,31 @@ import DrinkCard from './Bebidas/DrinkCard'
 import Cart from './Cart/Cart'
 import CartButton from './Cart/CartButton'
 import PromotionCarousel from './Promotions/PromotionCarousel'
+import Login from './Login/Login'
 import { useCart } from '../Context/CartContext'
+import { useAuth } from '../Context/AuthContext'
+import { Link } from 'react-router-dom'
 import Logo from '../assets/logo.jpg'
-import Margarita from '../assets/Margarita.jpg'
-import Mojito from '../assets/mojito.jpg'
-import GinTonic from '../assets/gin_tonic.jpg'
-import PiñaColada from '../assets/piña_colada.jpg'
-import Manhattan from '../assets/Manhattan.jpg'
-import Caipirinha from '../assets/Caipirinha.jpg'
-import CubaLibre from '../assets/Cuba_libre.jpg'
-import Daiquiri from '../assets/Daiquiri.jpg'
-import Cerveza from '../assets/cerveza.jpg'
-import Vino from '../assets/vino.jpg'
-import Whisky from '../assets/Whisky.jpg'
-import FernetConCola from '../assets/Fernet_con_cola.jpg'
 import axios from "axios"
-import { useState, useEffect} from 'react'
+import { useState, useEffect } from 'react'
 
 function BarPlayeroLayout() {
-  const { addToCart } = useCart()
+  const { addToCart, clearCart, updateQuantity } = useCart()
+  const { user, isAdmin, logout } = useAuth()
+  const [showLogin, setShowLogin] = useState(false)
   // Datos de productos con stock
   const [products, setProducts] = useState([]);
   const [promotions, setPromotions] = useState([]);
+  const [cartMsg, setCartMsg] = useState(null)
   // Cargar productos
   useEffect(() => {
     axios.get("http://localhost:3000/api/obtenerproductos")
       .then(res => {
         const lista = res.data.map(p => ({
+          id: p.Id,
           title: p.Nombre,
           image: "data:image/png;base64," + p.Imagen,
-          price: p.Precio,
+          price: "$" + p.Precio,
           description: p.Descripcion,
           stock: p.Stock,
           raw: p
@@ -45,60 +40,67 @@ function BarPlayeroLayout() {
     axios.get("http://localhost:3000/api/obtenerpromos")
       .then(res => {
         const lista = res.data.map(p => ({
-          name: p.Nombre,
-          price: p.Precio,
-          image: "data:image/png;base64," + p.ImagenPromo
+          title: p.Nombre,
+          image: "data:image/png;base64," + p.Imagen,
+          description: p.Descripcion,
+          newPrice: "$" + p.Precio,
         }));
         setPromotions(lista);
       });
   }, []);
-  /*DDDDDDDDDDDD
-  // Promociones especiales
-  const promotions = [
-    {
-      title: "2x1 en Mojitos",
-      description: "Aprovecha esta increíble promoción: compra 2 mojitos y paga solo 1. Perfecto para compartir con amigos.",
-      image: Mojito,
-      oldPrice: "$24",
-      newPrice: "$12",
-      discount: "50% OFF"
-    },
-    {
-      title: "Combo Piña Colada + Margarita",
-      description: "Disfruta de dos de nuestros cócteles más populares con un descuento especial. Ideal para una noche tropical.",
-      image: PiñaColada,
-      oldPrice: "$27",
-      newPrice: "$20",
-      discount: "26% OFF"
-    },
-    {
-      title: "Happy Hour Cervezas",
-      description: "De 18:00 a 20:00, todas las cervezas con un 30% de descuento. ¡No te lo pierdas!",
-      image: Cerveza,
-      oldPrice: "$8",
-      newPrice: "$5.60",
-      discount: "30% OFF"
-    }
-  ]
-  */
-
-  // Promociones especiales
-  axios.get("http://localhost:3000/api/obtenerpromos")
-    .then(res => {
-      const Promos = res.data;
-      console.log(Promos.length);
-      Promos.map((Promo) => {
-        promotions.push({
-          name: Promo.NombrePromo,
-          newPrice: "$" + Promo.PrecioPromo,
-          image: "data:image/png;base64," + Promo.ImagenPromo,
-          description: Promo.DescripcionPromo
-        });
+  useEffect(() => {
+    if (!user || !user.Id)
+      return
+    axios.post('http://localhost:3000/api/obtenercarrito', { ID_Cliente: user.Id })
+      .then(res => {
+        const serverItems = res.data || []
+        clearCart()
+        serverItems.forEach(item => {
+          const productFromServer = {
+            title: item.ProductoNombre || `Producto ${item.ID_Producto}`,
+            image: item.ProductoImagen ? `data:image/png;base64,${item.ProductoImagen}` : '',
+            price: "$" + (item.ProductoPrecio ?? "0"),
+            description: item.ProductoDescripcion ?? '',
+            stock: item.Stock ?? 9999,
+            raw: { ID: item.ID_Producto }
+          }
+          // Añadimos una vez y luego seteamos la cantidad real
+          addToCart(productFromServer)
+          // updateQuantity espera el título (coincide con lo que usamos arriba)
+          if (item.Cantidad > 1) {
+            updateQuantity(productFromServer.title, item.Cantidad)
+          }
+        })
       })
-    });
+  }, [user]); // corre cuando user cambie
+
+  const handleAddToCart = async (product) => {
+    if (user && user.Id) {
+      try {
+        console.log(user);
+        console.log(product.raw.ID)
+        await axios.post('http://localhost:3000/api/anadirprodcarrito', {
+          ID_Cliente: user.Id,
+          ID_Producto: product.raw?.ID ?? product.raw?.id ?? null
+        })
+        // opción: mostrar mensaje corto
+        setCartMsg('Producto añadido al carrito (servidor)')
+        setTimeout(() => setCartMsg(null), 2000)
+        addToCart(product)
+      } catch (err) {
+        console.error("Error añadiendo producto al carrito en servidor:", err)
+        setTimeout(() => setCartMsg(null), 2500)
+      }
+    } else {
+      setCartMsg('Producto añadido al carrito (local)')
+      setTimeout(() => setCartMsg(null), 1600)
+      addToCart(product)
+    }
+  }
 
   return (
     <div className="layout">
+      {showLogin && <Login onClose={() => setShowLogin(false)} />}
       <CartButton />
       <Cart />
 
@@ -110,6 +112,21 @@ function BarPlayeroLayout() {
           <a href="#">Bebidas</a>
           <a href="#">Contacto</a>
         </nav>
+        <div className="user-actions">
+          {user ? (
+            <>
+              <span className="user-name">Hola, {user.Nombre}</span>
+              {isAdmin && (
+                <Link to="/admin" className="admin-link">Admin</Link>
+              )}
+              <button className="logout-btn" onClick={logout}>Cerrar Sesión</button>
+            </>
+          ) : (
+            <button className="login-btn" onClick={() => setShowLogin(true)}>
+              Iniciar Sesión
+            </button>
+          )}
+        </div>
       </header>
 
       <section className="intermedio">
@@ -130,13 +147,13 @@ function BarPlayeroLayout() {
         <div className="cards">
           {products.map(product => (
             <DrinkCard
-              key={product.title}
+              key={product.title + (product.raw?.ID ?? '')}
               title={product.title}
               image={product.image}
               price={product.price}
               description={product.description}
               stock={product.stock}
-              onAddToCart={() => addToCart(product.raw)}
+              onAddToCart={() => handleAddToCart(product)}
             />
           ))}
         </div>
@@ -144,19 +161,6 @@ function BarPlayeroLayout() {
     </div>
   )
 }
-/*
-            {products.map((product) => (
-            <DrinkCard 
-              key={product.title}
-              title={product.title} 
-              image={product.image} 
-              price={product.price} 
-              description={product.description}
-              stock={product.stock}
-              onAddToCart={() => addToCart(product)}
-            />
-          ))}
-*/
 
 export default BarPlayeroLayout
 

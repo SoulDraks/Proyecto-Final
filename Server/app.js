@@ -7,11 +7,13 @@ const cors= require('cors')
 App.use(cors())
 App.use(express.json())
 
-const Router = require('./src/Routers/Login.Router')
-App.use('/api', Router)
+const CarritoRoutes = require("./src/Routers/Carrito.Routes");
+const LoginRoutes = require('./src/Routers/Login.Routes')
+const ProductosRoutes = require("./src/Routers/Productos.Routes")
+App.use('/api', LoginRoutes, CarritoRoutes, ProductosRoutes)
 
 require('dotenv').config()
-const PORT = process.env.PORT || 5000
+const PORT = process.env.PORT || 3000
 
 App.listen(PORT,()=>
 {

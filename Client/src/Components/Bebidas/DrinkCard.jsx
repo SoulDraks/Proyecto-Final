@@ -8,7 +8,7 @@ function DrinkCard({ title, image, price, description, stock, onAddToCart }) {
         <h3 className="card-title">{title}</h3>
         <p className="card-description">{description}</p>
         <div className="card-info">
-          <p className="card-price">{"$" + price}</p>
+          <p className="card-price">{price}</p>
           <p className={`card-stock ${isOutOfStock ? 'out-of-stock' : ''}`}>
             Stock: {stock}
           </p>

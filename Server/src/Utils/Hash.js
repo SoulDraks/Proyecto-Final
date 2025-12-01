@@ -7,13 +7,13 @@ const Salto = 10;
 async function EncriptarPassword(Password)
 {
     const Seguridad = await Encriptar.genSalt(Salto);
-    return Encriptar.hash(Password, Seguridad);
+    return await Encriptar.hash(Password, Seguridad);
 }
 
 // ---> Metodo para Desencriptar
-function CompararPassword(Password, Parametro)
+async function CompararPassword(Password, Parametro)
 {
-    return Encriptar.compare(Password, Parametro);
+    return await Encriptar.compare(Password, Parametro);
 }
 
 module.exports = {CompararPassword, EncriptarPassword}
