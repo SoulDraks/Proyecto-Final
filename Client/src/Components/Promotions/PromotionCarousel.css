@@ -1,8 +1,8 @@
 .promotion-section {
   padding: 60px 20px;
-  background: linear-gradient(135deg, #1a0a2e 0%, #450693 50%, #8C00FF 100%);
-  border-top: 3px solid #FFC400;
-  border-bottom: 3px solid #FFC400;
+  background: linear-gradient(180deg, #000000 0%, #0d0d0d 100%);
+  border-top: 3px solid #ffffff;
+  border-bottom: 3px solid #ffffff;
   position: relative;
   overflow: hidden;
 }
@@ -14,17 +14,14 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: radial-gradient(circle at 50% 50%, rgba(255, 196, 0, 0.1) 0%, transparent 70%);
+  background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.02) 0%, transparent 70%);
   pointer-events: none;
 }
 
 .promotion-title {
   text-align: center;
   font-size: 36px;
-  background: linear-gradient(135deg, #FFC400 0%, #FF3F7F 50%, #8C00FF 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #ffffff;
   margin-bottom: 40px;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
   letter-spacing: 3px;
@@ -60,11 +57,11 @@
 
 .promotion-card {
   position: relative;
-  background: linear-gradient(145deg, rgba(69, 6, 147, 0.95), rgba(140, 0, 255, 0.85));
+  background: #1a1a1a;
   border-radius: 20px;
   overflow: hidden;
-  border: 3px solid #FFC400;
-  box-shadow: 0 10px 40px rgba(140, 0, 255, 0.4), 0 0 50px rgba(255, 196, 0, 0.3);
+  border: 2px solid #ffffff;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.45);
   display: flex;
   flex-direction: column;
   height: 500px;
@@ -74,8 +71,8 @@
   position: absolute;
   top: 20px;
   right: 20px;
-  background: linear-gradient(135deg, #FF3F7F 0%, #FFC400 100%);
-  color: #ffffff;
+  background: #ffffff;
+  color: #000000;
   padding: 10px 20px;
   border-radius: 25px;
   font-weight: bold;
@@ -83,7 +80,7 @@
   text-transform: uppercase;
   letter-spacing: 2px;
   z-index: 2;
-  box-shadow: 0 4px 15px rgba(255, 63, 127, 0.5);
+  box-shadow: 0 6px 25px rgba(255, 255, 255, 0.05);
   animation: pulse 2s infinite;
 }
 
@@ -113,7 +110,7 @@
 
 .promotion-card-title {
   font-size: 28px;
-  color: #FFC400;
+  color: #ffffff;
   margin: 0;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
   letter-spacing: 1px;
@@ -141,38 +138,34 @@
 }
 
 .promotion-new-price {
-  background: linear-gradient(135deg, #FFC400 0%, #FF3F7F 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #ffffff;
   font-size: 32px;
   font-weight: bold;
-  text-shadow: 0 0 10px rgba(255, 196, 0, 0.5);
 }
 
 .promotion-discount {
-  background: linear-gradient(135deg, #FF3F7F 0%, #8C00FF 100%);
+  background: #1a1a1a;
   color: #ffffff;
   padding: 8px 16px;
   border-radius: 20px;
   font-weight: bold;
   font-size: 16px;
-  box-shadow: 0 4px 10px rgba(255, 63, 127, 0.4);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
+  border: 2px solid #ffffff;
 }
 
 .carousel-btn {
   width: 50px;
   height: 50px;
-  background: linear-gradient(135deg, #FFC400 0%, #FF3F7F 100%);
+  background: #ffffff;
+  color: #000000;
   border: none;
   border-radius: 50%;
-  color: #ffffff;
   font-size: 32px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 15px rgba(255, 196, 0, 0.5);
   transition: all 0.3s ease;
   z-index: 2;
   flex-shrink: 0;
@@ -196,7 +189,7 @@
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  border: 2px solid #FFC400;
+  border: 2px solid #ffffff;
   background: transparent;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -204,13 +197,13 @@
 }
 
 .indicator:hover {
-  background: rgba(255, 196, 0, 0.5);
+  background: rgba(255, 255, 255, 0.06);
   transform: scale(1.2);
 }
 
 .indicator.active {
-  background: #FFC400;
-  box-shadow: 0 0 10px rgba(255, 196, 0, 0.8);
+  background: #ffffff;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.12);
 }
 
 @media (max-width: 768px) {

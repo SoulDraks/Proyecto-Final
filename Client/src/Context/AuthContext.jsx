@@ -21,7 +21,7 @@ export const AuthProvider = ({ children }) => {
     const savedUser = localStorage.getItem('user')
     const savedIsAdmin = localStorage.getItem('isAdmin')
     const savedIsSuperAdmin = localStorage.getItem('isSuperAdmin')
-    
+
     if (savedUser) {
       const userData = JSON.parse(savedUser)
       setUser(userData)
@@ -51,8 +51,17 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('isSuperAdmin')
   }
 
+  function setProcesandoOrden(valor)
+  {
+    if (!user)
+      return
+    const nuevoUser = { ...user, ProcesandoOrden: valor }
+    setUser(nuevoUser)
+    localStorage.setItem('user', JSON.stringify(nuevoUser))
+  }
+
   return (
-    <AuthContext.Provider value={{ user, isAdmin, isSuperAdmin, login, logout, loading }}>
+    <AuthContext.Provider value={{ user, isAdmin, isSuperAdmin, login, logout, loading, setProcesandoOrden}}>
       {children}
     </AuthContext.Provider>
   )

@@ -23,6 +23,7 @@ function CrearTablas(db)
 	        "Nombre"	TEXT UNIQUE,
 	        "Correo"	TEXT,
 	        "Contraseña"	TEXT,
+            "ProcesandoOrden" INTEGER,
 	        PRIMARY KEY("Id" AUTOINCREMENT)
         );
     `, (Error) => CheckError(Error, "Tabla Clientes no creada"));
@@ -54,6 +55,7 @@ function CrearTablas(db)
 	        PRIMARY KEY("ID" AUTOINCREMENT)
         );
     `, (Error) => CheckError(Error, "Tabla Promos no creada"));
+    db
     // Tabla Productos
     db.run(`
         CREATE TABLE IF NOT EXISTS "Productos" (
@@ -63,7 +65,6 @@ function CrearTablas(db)
             "Imagen"    BLOB,
 	        "Stock"	INTEGER,
 	        "Descripcion"	TEXT,
-	        "ID_Promo"	INTEGER,
 	        PRIMARY KEY("ID"),
 	        FOREIGN KEY("ID_Promo") REFERENCES "Promos"("ID")
         );
@@ -89,11 +90,30 @@ function CrearTablas(db)
 	        "Fecha"	TEXT,
 	        "Hora"	TEXT,
 	        "Monto_Total"	INTEGER,
-	        "ID_Carrito"	INTEGER,
+	        "ID_Cliente"	INTEGER,
 	        PRIMARY KEY("ID" AUTOINCREMENT),
-	        FOREIGN KEY("ID_Carrito") REFERENCES "Carrito"("ID")
+	        FOREIGN KEY("ID_Cliente") REFERENCES "Cliente"("ID")
         );
     `, (Error) => CheckError(Error, "Tabla Compra no creada"));
+    db.run(`
+        CREATE TABLE IF NOT EXISTS "PromosProductos" (
+	        "ID_Producto"	INTEGER,
+	        "ID_Promo"	INTEGER,
+	        "Cantidad"	INTEGER,
+	        FOREIGN KEY("ID_Producto") REFERENCES "Productos"("ID"),
+	        FOREIGN KEY("ID_Promo") REFERENCES "Promos"("ID")
+        );
+    `)
+    db.run(`
+        CREATE TABLE IF NOT EXISTS "Mesas" (
+	        "ID"	INTEGER,
+	        "Estado"	TEXT,
+	        "Personas"	INTEGER,
+	        "ID_Cliente"	INTEGER,
+	        PRIMARY KEY("ID" AUTOINCREMENT),
+	        FOREIGN KEY("ID_Cliente") REFERENCES "Cliente"("Id")
+        );
+    `)
 }
 
 // Función para inicializar usuarios por defecto

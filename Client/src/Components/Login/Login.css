@@ -12,13 +12,14 @@
 }
 
 .login-container {
-  background: white;
+  background: #1a1a1a;
   padding: 2rem;
   border-radius: 10px;
   width: 90%;
   max-width: 400px;
   position: relative;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+  border: 2px solid #ffffff;
 }
 
 .login-close {
@@ -44,7 +45,7 @@
   margin-top: 0;
   margin-bottom: 1.5rem;
   text-align: center;
-  color: #333;
+  color: #ffffff;
 }
 
 .login-tabs {
@@ -56,8 +57,9 @@
 .login-tabs button {
   flex: 1;
   padding: 0.5rem;
-  border: 2px solid #ddd;
-  background: white;
+  border: 2px solid #ffffff;
+  background: #1a1a1a;
+  color: #ffffff;
   cursor: pointer;
   border-radius: 5px;
   font-size: 0.9rem;
@@ -65,9 +67,9 @@
 }
 
 .login-tabs button.active {
-  background: #4CAF50;
-  color: white;
-  border-color: #4CAF50;
+  background: #ffffff;
+  color: #000000;
+  border-color: #ffffff;
 }
 
 .login-container form {
@@ -78,20 +80,23 @@
 
 .login-container input {
   padding: 0.75rem;
-  border: 1px solid #ddd;
+  border: 2px solid #ffffff;
+  background: #1a1a1a;
+  color: #ffffff;
   border-radius: 5px;
   font-size: 1rem;
 }
 
 .login-container input:focus {
   outline: none;
-  border-color: #4CAF50;
+  border-color: #ffffff;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.06);
 }
 
 .submit-btn {
   padding: 0.75rem;
-  background: #4CAF50;
-  color: white;
+  background: #ffffff;
+  color: #000000;
   border: none;
   border-radius: 5px;
   font-size: 1rem;
@@ -101,7 +106,8 @@
 }
 
 .submit-btn:hover {
-  background: #45a049;
+  background: #000000;
+  color: #ffffff;
 }
 
 .error-message {

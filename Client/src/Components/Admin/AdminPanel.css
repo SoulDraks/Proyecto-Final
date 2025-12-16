@@ -75,7 +75,7 @@
   max-width: 1400px;
   margin: 0 auto;
   color: #fff;
-  background: linear-gradient(180deg, #450693 0%, #1a0a2e 50%, #0d0519 100%);
+  background: #000000;
   min-height: 100vh;
   box-sizing: border-box;
   font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
@@ -88,27 +88,20 @@
   align-items: center;
   margin-bottom: 1.75rem;
   padding: 1rem 1.25rem;
-  background: linear-gradient(135deg, #450693 0%, #8C00FF 50%, #FF3F7F 100%);
-  background-size: 200% 200%;
-  animation: headerShift 10s linear infinite;
-  border-bottom: 3px solid #FFC400;
+  background: #1a1a1a;
+  border-bottom: 3px solid #ffffff;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
   border-radius: 12px;
   transform-origin: center;
-  animation-name: headerShift, slideInDown;
-  animation-duration: 10s, .45s;
-  animation-timing-function: linear, cubic-bezier(.2, .9, .2, 1);
-  animation-iteration-count: infinite, 1;
+  animation: slideInDown .45s cubic-bezier(.2, .9, .2, 1);
 }
 
 .admin-header h1 {
   margin: 0;
   font-size: 1.6rem;
   letter-spacing: 1px;
-  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
-  background: linear-gradient(135deg, #FFC400 0%, #FF3F7F 50%, #FF3F7F 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: #ffffff;
+  text-transform: uppercase;
   animation: fadeInUp .5s cubic-bezier(.2, .9, .2, 1) .05s both;
 }
 
@@ -152,47 +145,59 @@
 }
 
 .btn-add {
-  background: linear-gradient(135deg, #4CAF50 0%, #3da14a 100%);
-  color: #fff;
+  background: #ffffff;
+  color: #000000;
+  border: 2px solid #ffffff;
 }
 
 .btn-add:hover {
   transform: translateY(-4px);
-  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.32);
+  box-shadow: 0 18px 50px rgba(255, 255, 255, 0.2);
+  background: #000000;
+  color: #ffffff;
 }
 
 .btn-toggle {
-  background: linear-gradient(135deg, #6c757d 0%, #575f66 100%);
-  color: #fff;
+  background: #1a1a1a;
+  color: #ffffff;
+  border: 2px solid #ffffff;
 }
 
 .btn-toggle.active {
-  background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+  background: #ffffff;
+  color: #000000;
 }
 
 .btn-toggle:hover {
   transform: translateY(-3px);
+  background: #ffffff;
+  color: #000000;
 }
 
 .btn-save {
-  background: linear-gradient(135deg, #FFC400 0%, #FF3F7F 100%);
-  color: #000;
-  box-shadow: 0 8px 30px rgba(255, 196, 0, 0.12);
+  background: #ffffff;
+  color: #000000;
+  border: 2px solid #ffffff;
+  box-shadow: 0 8px 30px rgba(255, 255, 255, 0.1);
 }
 
 .btn-save:hover {
   transform: translateY(-3px);
-  box-shadow: 0 18px 50px rgba(255, 63, 127, 0.16);
-  color: #fff;
+  box-shadow: 0 18px 50px rgba(255, 255, 255, 0.2);
+  background: #000000;
+  color: #ffffff;
 }
 
 .btn-cancel {
-  background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
-  color: #fff;
+  background: #1a1a1a;
+  color: #ffffff;
+  border: 2px solid #ffffff;
 }
 
 .btn-cancel:hover {
   transform: translateY(-3px);
+  background: #ffffff;
+  color: #000000;
 }
 
 .admin-message {
@@ -217,21 +222,22 @@
 }
 
 .admin-form-container {
-  background: linear-gradient(145deg, rgba(69, 6, 147, 0.85), rgba(140, 0, 255, 0.8));
+  background: #1a1a1a;
   padding: 1.5rem;
   border-radius: 12px;
   margin-bottom: 1.75rem;
-  border: 2px solid rgba(255, 196, 0, 0.12);
-  box-shadow: 0 8px 30px rgba(140, 0, 255, 0.18);
+  border: 2px solid #ffffff;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
   animation: fadeInUp .45s cubic-bezier(.2, .9, .2, 1);
   transform-origin: center;
 }
 
 .admin-form h2 {
   margin-top: 0;
-  color: #FFC400;
+  color: #ffffff;
   font-size: 1.25rem;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .form-group {
@@ -253,19 +259,19 @@
 .form-group select {
   width: 100%;
   padding: 0.65rem;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 2px solid #ffffff;
   border-radius: 8px;
   font-size: 1rem;
-  background: rgba(0, 0, 0, 0.18);
-  color: #fff;
+  background: #000000;
+  color: #ffffff;
   outline: none;
   transition: box-shadow .22s cubic-bezier(.2, .9, .2, 1), border-color .22s cubic-bezier(.2, .9, .2, 1), transform .18s cubic-bezier(.2, .9, .2, 1);
 }
 
 .form-group input:focus,
 .form-group textarea:focus {
-  border-color: #FFC400;
-  box-shadow: 0 12px 30px rgba(255, 196, 0, 0.06);
+  border-color: #ffffff;
+  box-shadow: 0 12px 30px rgba(255, 255, 255, 0.2);
   transform: translateY(-2px);
 }
 
@@ -278,7 +284,7 @@
   height: 140px;
   object-fit: cover;
   border-radius: 8px;
-  border: 2px solid #ccc;
+  border: 2px solid #ffffff;
 }
 .form-actions {
   display: flex;
@@ -293,9 +299,10 @@
 
 .products-table-container h2 {
   margin-bottom: 0.8rem;
-  color: #FFC400;
+  color: #ffffff;
   font-size: 1.2rem;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .products-table {
@@ -308,8 +315,9 @@
 }
 
 .products-table thead {
-  background: linear-gradient(135deg, #450693 0%, #8C00FF 60%, #FF3F7F 100%);
-  color: #fff;
+  background: #1a1a1a;
+  color: #ffffff;
+  border-bottom: 2px solid #ffffff;
   transform-origin: left;
   animation: fadeInUp .42s cubic-bezier(.2, .9, .2, 1) .02s both;
 }
@@ -361,8 +369,8 @@
 
 .products-table tbody tr:hover {
   transform: translateY(-6px) scale(1.01);
-  background: linear-gradient(90deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+  background: #1a1a1a;
+  box-shadow: 0 10px 30px rgba(255, 255, 255, 0.1);
 }
 
 .product-thumb {
@@ -393,40 +401,47 @@
 }
 
 .btn-edit {
-  background: linear-gradient(135deg, #FFC400 0%, #FF3F7F 100%);
-  color: #000;
+  background: #ffffff;
+  color: #000000;
+  border: 2px solid #ffffff;
   margin-right: 0.5rem;
   transition: transform .18s cubic-bezier(.2, .9, .2, 1), box-shadow .18s cubic-bezier(.2, .9, .2, 1);
 }
 
 .btn-edit:hover {
   transform: translateY(-3px);
-  color: #fff;
-  box-shadow: 0 10px 30px rgba(255, 63, 127, 0.12);
+  background: #000000;
+  color: #ffffff;
+  box-shadow: 0 10px 30px rgba(255, 255, 255, 0.2);
 }
 
 .btn-delete {
-  background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
-  color: #fff;
+  background: #1a1a1a;
+  color: #ffffff;
+  border: 2px solid #ffffff;
 }
 
 .btn-delete:hover {
   transform: translateY(-3px);
+  background: #ffffff;
+  color: #000000;
 }
 
 .admins-section {
   margin-bottom: 1.5rem;
   padding: 1rem;
-  background: linear-gradient(145deg, rgba(69, 6, 147, 0.75), rgba(140, 0, 255, 0.7));
+  background: #1a1a1a;
   border-radius: 12px;
-  border: 2px solid rgba(255, 196, 0, 0.08);
-  box-shadow: 0 8px 30px rgba(140, 0, 255, 0.18);
+  border: 2px solid #ffffff;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
   animation: fadeInUp .45s cubic-bezier(.2, .9, .2, 1) .04s both;
 }
 
 .admins-section h2 {
   margin-top: 0;
-  color: #FFC400;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .role-badge {
@@ -439,13 +454,15 @@
 }
 
 .role-badge.superadmin {
-  background: linear-gradient(135deg, #FFC400 0%, #ffd24d 100%);
-  color: #000;
+  background: #ffffff;
+  color: #000000;
+  border: 2px solid #ffffff;
 }
 
 .role-badge.admin {
-  background: linear-gradient(135deg, #17a2b8 0%, #1296a3 100%);
-  color: #fff;
+  background: #1a1a1a;
+  color: #ffffff;
+  border: 2px solid #ffffff;
 }
 
 .role-badge:hover {

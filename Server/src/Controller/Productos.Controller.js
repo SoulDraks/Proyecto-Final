@@ -28,20 +28,22 @@ async function ObtenerProductos(req, res)
 
 async function ObtenerPromos(req, res) {
     const query = `
-        SELECT Productos.ID AS ProductoID,
-               Productos.Nombre AS ProductoNombre,
-               Productos.Precio AS ProductoPrecio,
-               Productos.Imagen AS ProductoImagen,
-               Productos.Stock,
-               Productos.Descripcion AS ProductoDescripcion,
-               Promos.ID AS PromoID,
-               Promos.Nombre AS PromoNombre,
-               Promos.Precio AS PromoPrecio,
-               Promos.Imagen AS PromoImagen,
-               Promos.Descripcion AS PromoDescripcion
-        FROM Productos
-        JOIN Promos ON Productos.ID_Promo = Promos.ID
-        WHERE Productos.ID_Promo != -1
+        SELECT
+            Productos.ID AS ProductoID,
+            Productos.Nombre AS ProductoNombre,
+            Productos.Precio AS ProductoPrecio,
+            Productos.Imagen AS ProductoImagen,
+            Productos.Stock AS ProductoStock,
+            Productos.Descripcion AS ProductoDescripcion,
+            Promos.ID AS PromoID,
+            Promos.Nombre AS PromoNombre,
+            Promos.Precio AS PromoPrecio,
+            Promos.Imagen AS PromoImagen,
+            Promos.Descripcion AS PromoDescricion,
+            PromosProductos.Cantidad
+        FROM PromosProductos
+        LEFT JOIN Productos ON PromosProductos.ID_Producto = Productos.Id
+        LEFT JOIN Promos ON PromosProductos.ID_Promo = Promos.ID
         ORDER BY Promos.ID;
     `;
 
@@ -69,8 +71,9 @@ async function ObtenerPromos(req, res) {
             Nombre: fila.ProductoNombre,
             Precio: fila.ProductoPrecio,
             Imagen: fila.ProductoImagen.toString("base64"),
-            Stock: fila.Stock,
-            Descripcion: fila.ProductoDescripcion
+            Stock: fila.ProductoStock,
+            Descripcion: fila.ProductoDescripcion,
+            Cantidad: fila.Cantidad
         });
     });
 

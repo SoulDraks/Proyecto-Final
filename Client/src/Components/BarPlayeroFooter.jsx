@@ -4,7 +4,7 @@ function BarPlayeroFooter() {
   return (
     <footer>
       <p>
-        © 2024 Bar Playero - Disfruta de los mejores momentos junto al mar
+        © 2024 Urban Bar - Coctelería de autor en el corazón de la ciudad
       </p>
     </footer>
   )

@@ -9,7 +9,8 @@ const {
     LoginAdmin,
     ObtenerAdmins,
     EliminarAdmin,
-    CrearUsuariosIniciales
+    CrearUsuariosIniciales,
+    UsuarioValido
 } = require("../Controller/Login.Controller");
 
 Rutas.post("/registrarse", Registrarse);
@@ -20,5 +21,6 @@ Rutas.post("/loginadmin", LoginAdmin);
 Rutas.get("/obteneradmins", ObtenerAdmins);
 Rutas.post("/eliminaradmin", EliminarAdmin);
 Rutas.post("/crearusuariosiniciales", CrearUsuariosIniciales); // Endpoint temporal para desarrollo
+Rutas.get("/usuariovalido", UsuarioValido)
 
 module.exports = Rutas;

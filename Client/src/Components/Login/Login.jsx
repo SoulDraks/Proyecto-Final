@@ -72,17 +72,22 @@ function Login({ onClose }) {
           Correo: formData.Correo,
           Contraseña: formData.Contraseña
         })
-
         setSuccess(response.data.Mensaje || 'Registro exitoso')
-        setTimeout(() => {
-          setIsRegister(false)
-          setFormData({
-            Nombre: '',
-            Correo: '',
-            Contraseña: '',
-            ConfirmarContraseña: ''
-          })
-        }, 1500)
+        setIsRegister(false)
+        setIsAdminLogin(false) 
+        setFormData({
+          Nombre: response.data.Nombre || formData.Nombre || '',
+          Correo: '',
+          Contraseña: '',
+          ConfirmarContraseña: ''
+        })
+        setTimeout(() => setSuccess(''), 3000)
+        /*          CORREO DE PROMOS          */
+        // Cambialo a tu gusto.
+        axios.post('http://localhost:3000/api/enviarcorreo', {
+          destinatario: formData.Correo,
+          nombreUsuario: response.Nombre
+        })
       } catch (err) {
         setError(err.response?.data?.Error || 'Error al registrar')
       }
@@ -97,7 +102,7 @@ function Login({ onClose }) {
         const endpoint = isAdminLogin
           ? 'http://localhost:3000/api/loginadmin'
           : 'http://localhost:3000/api/login'
-        
+
         const response = await axios.post(endpoint, {
           Nombre: formData.Nombre,
           Contraseña: formData.Contraseña
@@ -139,9 +144,9 @@ function Login({ onClose }) {
     setForgotError('')
     setForgotMsg('')
 
-    if (!forgotNombre || !forgotEmail) { 
-      setForgotError('Ingresa tu Nombre y tu Correo'); 
-      return 
+    if (!forgotNombre || !forgotEmail) {
+      setForgotError('Ingresa tu Nombre y tu Correo');
+      return
     }
 
     // generar código localmente
@@ -209,9 +214,9 @@ function Login({ onClose }) {
       <div className="login-container">
         <button className="login-close" onClick={onClose}>×</button>
         <h2>{isRegister ? 'Registro' : 'Iniciar Sesión'}</h2>
-        
+
         <div className="login-tabs">
-          <button 
+          <button
             className={!isAdminLogin ? 'active' : ''}
             onClick={() => {
               setIsAdminLogin(false)
@@ -220,7 +225,7 @@ function Login({ onClose }) {
           >
             Cliente
           </button>
-          <button 
+          <button
             className={isAdminLogin ? 'active' : ''}
             onClick={() => {
               setIsAdminLogin(true)
@@ -240,7 +245,7 @@ function Login({ onClose }) {
             onChange={handleChange}
             required
           />
-          
+
           {isRegister && (
             <input
               type="email"
