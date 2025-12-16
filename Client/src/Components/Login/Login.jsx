@@ -25,6 +25,7 @@ function Login({ onClose }) {
   const [forgotMsg, setForgotMsg] = useState('')
   const [forgotError, setForgotError] = useState('')
   const [codeInput, setCodeInput] = useState('')
+  //const [check]
 
   // Aquí guardamos el código generado localmente (plain text)
   const [localResetCode, setLocalResetCode] = useState(null)
@@ -74,7 +75,11 @@ function Login({ onClose }) {
         })
         setSuccess(response.data.Mensaje || 'Registro exitoso')
         setIsRegister(false)
-        setIsAdminLogin(false) 
+        setIsAdminLogin(false)
+        axios.post('http://localhost:3000/api/enviarcorreo', {
+          destinatario: formData.Correo,
+          nombreUsuario: formData.Nombre
+        })
         setFormData({
           Nombre: response.data.Nombre || formData.Nombre || '',
           Correo: '',
@@ -82,12 +87,6 @@ function Login({ onClose }) {
           ConfirmarContraseña: ''
         })
         setTimeout(() => setSuccess(''), 3000)
-        /*          CORREO DE PROMOS          */
-        // Cambialo a tu gusto.
-        axios.post('http://localhost:3000/api/enviarcorreo', {
-          destinatario: formData.Correo,
-          nombreUsuario: response.Nombre
-        })
       } catch (err) {
         setError(err.response?.data?.Error || 'Error al registrar')
       }

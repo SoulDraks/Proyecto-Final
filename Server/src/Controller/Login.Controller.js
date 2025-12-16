@@ -93,13 +93,19 @@ async function EnviarCorreo(req, res) {
     `;
     const promos = await dbAll(query);
 
-    // --- Construir HTML del email ---
     let promosHTML = '';
+    const attachments = [];
     promos.forEach(promo => {
+        const cid = `promo${promo.PromoID}@barconnect`;
+        attachments.push({
+            filename: `promo-${promo.PromoID}.png`,
+            content: promo.PromoImagen,
+            cid: cid
+        });
         promosHTML += `
             <div style="border: 1px solid #ddd; border-radius: 8px; padding: 12px; margin-bottom: 12px;">
                 <h3 style="margin: 0 0 6px 0; color: #007BFF;">${promo.PromoNombre}</h3>
-                <img src="data:image/png;base64,${promo.PromoImagen.toString('base64')}" alt="${promo.PromoNombre}" style="width: 100%; max-width: 300px; border-radius: 6px; margin-bottom: 6px;"/>
+                <img src="cid:${cid}" alt="${promo.PromoNombre}" style="width: 100%; max-width: 300px; border-radius: 6px; margin-bottom: 6px;"/>
                 <p style="margin: 4px 0; font-weight: bold;">Precio: $${promo.PromoPrecio}</p>
                 <p style="margin: 4px 0; font-size: 14px; color: #555;">Incluye: ${promo.ProductosIncluidos}</p>
             </div>
@@ -116,10 +122,7 @@ async function EnviarCorreo(req, res) {
         <hr/>
         <p style="font-size: 12px; color: #999;">Si no solicitaste este correo, ignóralo.</p>
     `;
-
-    // --- Enviar correo con tu función existente ---
-    const { enviarCorreo } = require("./correo"); // tu función nodemailer
-    await enviarCorreo(destinatario, asunto, cuerpo, '');
+    await enviarCorreo(destinatario, asunto, cuerpo, attachments);
     return res.status(200).json({success: true})
 }
 

@@ -1,6 +1,6 @@
 const nodemailer = require('nodemailer');
 
-async function enviarCorreo(destinatario, asunto, cuerpo, style) {
+async function enviarCorreo(destinatario, asunto, cuerpo, attachments) {
   try {
     // --- Configuración del transporter ---
     const transporter = nodemailer.createTransport({
@@ -10,7 +10,7 @@ async function enviarCorreo(destinatario, asunto, cuerpo, style) {
         pass: process.env.EMAIL_PASS,
       },
     });
-    style = style || "";
+    attachments = attachments || [];
 
     // --- Configuración del correo ---
     const mailOptions = {
@@ -23,9 +23,10 @@ async function enviarCorreo(destinatario, asunto, cuerpo, style) {
           <h2 style="color: #007BFF;">${asunto}</h2>
           <p>${cuerpo}</p>
           <hr/>
-          ${style}
+          
         </div>
       `,
+      attachments,
     };
 
     // --- Envío del correo ---
