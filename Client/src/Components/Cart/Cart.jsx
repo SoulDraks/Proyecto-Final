@@ -3,7 +3,6 @@ import { useAuth } from '../../Context/AuthContext'
 import axios from 'axios'
 import { useState, useEffect } from 'react'
 import './Cart.css'
-import e from 'cors'
 
 function Cart({ onShowLogin }) {
   const {

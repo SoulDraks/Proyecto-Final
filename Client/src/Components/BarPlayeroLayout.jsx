@@ -21,6 +21,7 @@ function BarPlayeroLayout() {
   const [products, setProducts] = useState([]);
   const [promotions, setPromotions] = useState([]);
   const [cartMsg, setCartMsg] = useState(null)
+  const [showScrollTop, setShowScrollTop] = useState(false)
 
   // Mostrar mensaje de cart
   useEffect(() => {
@@ -29,6 +30,15 @@ function BarPlayeroLayout() {
       return () => clearTimeout(timer)
     }
   }, [cartMsg])
+
+  // Mostrar botón de scroll to top
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScrollTop(window.scrollY > 300)
+    }
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
   // Cargar productos
   useEffect(() => {
     axios.get("http://localhost:3000/api/obtenerproductos")
@@ -142,10 +152,11 @@ function BarPlayeroLayout() {
       <header className="encabezado">
         <img src={Logo} alt="Urban Bar Logo" className="logo-image" />
         <nav className="menu">
-          <a href="#">Cocteles</a>
-          <a href="#">Cervezas</a>
-          <a href="#">Bebidas</a>
-          <a href="#">Contacto</a>
+          <a href="#promos-2x1-section">PROMOCIONES</a>
+          <a href="#menu-section">menu</a>
+          <a href="#about-section">sobre nosotros</a>
+          <a href="#ambiente-unico">ambiente unico</a>
+          <a href="#contacto">contacto</a>
           <button className="reserve-btn" onClick={handleReserveTable}>
             Reservar Mesa
           </button>
@@ -284,7 +295,7 @@ function BarPlayeroLayout() {
       </section>
 
       {/* Sección Ambiente Único */}
-      <section className="info-section">
+      <section className="info-section" id="ambiente-unico">
         <div className="info-container">
           <h3>AMBIENTE ÚNICO</h3>
           <div className="ambience-gallery">
@@ -297,7 +308,7 @@ function BarPlayeroLayout() {
       </section>
 
       {/* Sección Contacto */}
-      <section className="contact-section">
+      <section className="contact-section" id="contacto">
         <div className="contact-container">
           <h3 className="contact-title">CONTACTO</h3>
           <form className="contact-form">
@@ -323,6 +334,7 @@ function BarPlayeroLayout() {
           </form>
         </div>
       </section>
+      {showScrollTop && <button className="scroll-to-top" onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})}>↑</button>}
     </div>
   )
 }

@@ -26,11 +26,11 @@
 .menu a{
     text-decoration: none;
     color: #ffffff;
-    font-size: 18px;
+    font-size: 14px;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 1px;
-    padding: 8px 16px;
+    padding: 6px 12px;
     border-radius: 6px;
     transition: all 0.3s ease;
 }
@@ -752,7 +752,7 @@
 }
 
 .card {
-    background: #1a1a1a;
+    background: transparent;
     border-radius: 12px;
     border: 2px solid #ffffff;
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
@@ -771,7 +771,7 @@
 .card-image {
     width: 100%;
     height: 300px;
-    object-fit: cover;
+    object-fit: contain;
     object-position: center;
 }
 
@@ -878,4 +878,27 @@ footer p {
     font-size: 14px;
     text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
     color: #ffffff;
+}
+
+.scroll-to-top {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #ffffff;
+    color: #000000;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+.scroll-to-top:hover {
+    background: #000000;
+    color: #ffffff;
+    transform: scale(1.1);
 }
