@@ -116,12 +116,11 @@ async function EnviarCorreo(req, res) {
         <hr/>
         <p style="font-size: 12px; color: #999;">Si no solicitaste este correo, ignóralo.</p>
     `;
-
-    // --- Enviar correo con tu función existente ---
-    const { enviarCorreo } = require("./correo"); // tu función nodemailer
     await enviarCorreo(destinatario, asunto, cuerpo, '');
     return res.status(200).json({success: true})
 }
+
+
 
 // Para que se loguee el empleado/admin
 // Devuelve de la misma manera que Login pero con Empleado
